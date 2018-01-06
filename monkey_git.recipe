@@ -1,0 +1,46 @@
+from calibre.web.feeds.recipes import BasicNewsRecipe
+ 
+class MonkeyGit(BasicNewsRecipe):
+ 
+    title = 'Monkey_Git'
+    description = ''
+    #cover_url = 'http://akamaicovers.oreilly.com/images/0636920024972/lrg.jpg'
+    cover_url = ""
+    url_prefix = 'http://backlogtool.com/git-guide/cn/contents/'
+    #url_prefix = 'http://gameprogrammingpatterns.com/'
+    #url_prefix = 'https://learnopengl-cn.readthedocs.io/zh/latest/'
+    #url_prefix = "file:///E:/LearnOpenGL-CN-new-theme/site/"
+    no_stylesheets = True
+    keep_only_tags = [{ 'class': 'chapter' }]
+    keep_only_tags = [{ 'role': 'main' }]
+    #remove_tags = [{"name":"nav"}]
+    def get_title(self, link):
+        return link.contents[0].strip()
+ 
+    def parse_index(self):
+        soup = self.index_to_soup(self.url_prefix + '')
+        #print soup
+        #div = soup.find('div', { 'class': 'toc' })
+        #print dir(soup)
+        lis = soup.findAll('li')
+        print type(lis)
+        articles = []
+        for li in lis:
+            for link in li.findAll('a'):
+                #print link
+                href = link.get("href")
+                if not href:
+                    continue
+                if '#' in href or "http" in href:
+                    continue
+                if "." == href:
+                    continue
+                til = self.get_title(link)
+                url = self.url_prefix + href
+                a = { 'title': til, 'url': url }
+                print a
+                articles.append(a)
+ 
+        ans = [('Monkey_Git', articles)]
+ 
+        return ans
